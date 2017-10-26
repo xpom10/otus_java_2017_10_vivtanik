@@ -1,33 +1,28 @@
+import java.util.function.Supplier;
+
 public class Memory {
 
+    private final int sizeOfArray = 1000000;
 
-     public long countSizeOfManyObjects(int sizeOfArray) {
 
-        System.gc();
-        Runtime runtime = Runtime.getRuntime();
-        long before = runtime.totalMemory() - runtime.freeMemory();
+    public long countSizeOfManyObjects(Supplier<Object> sup) {
 
-        Object[] array = new Object[sizeOfArray];
-        for (int i = 0; i < sizeOfArray; i++) {
-            array[i] = new Object();
-        }
-        System.gc();
-        long after = runtime.totalMemory() - runtime.freeMemory();
-        return  ((after - before) / sizeOfArray) ;
+         long memoryBefore, memoryAfter;
+         Object[] array = new Object[sizeOfArray];
+         memoryBefore = currentMemory();
+         for (int i = 0; i < sizeOfArray; i++) {
+             array[i] = sup.get();
+         }
+         memoryAfter = currentMemory();
+         if (array.length > 0) {
+             array[0] = null;
+         }
+         return Math.round((memoryAfter - memoryBefore) / sizeOfArray);
     }
 
-    public long countSizeOfEmptyString() {
-
-//        System.gc();
+    private long currentMemory() {
+        System.gc();
         Runtime runtime = Runtime.getRuntime();
-        long before = runtime.totalMemory() - runtime.freeMemory();
-
-        String s = "";
-
-//        System.gc();
-        long after = runtime.totalMemory() - runtime.freeMemory();
-        return  ((after - before)) ;
+        return runtime.totalMemory() - runtime.freeMemory();
     }
-
-
 }
