@@ -12,7 +12,7 @@ public class Main {
         System.out.println(memory.countSizeOfManyObjects(() -> new HashSet<>()) + " bytes of HashSet");
         System.out.println(memory.countSizeOfManyObjects(() -> new Integer(5)) + " bytes of Integer");
         System.out.println(memory.countSizeOfManyObjects(() -> 999) + " bytes of int");
-        System.out.println(memory.countSizeOfManyObjects(() -> new int[100]) + " bytes of int");
+        System.out.println(memory.countSizeOfManyObjects(() -> new int[100]) + " bytes of int[]");
     }
 
 }
