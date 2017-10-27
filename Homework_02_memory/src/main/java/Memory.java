@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Memory {
@@ -24,5 +26,13 @@ public class Memory {
         System.gc();
         Runtime runtime = Runtime.getRuntime();
         return runtime.totalMemory() - runtime.freeMemory();
+    }
+
+    public List<Integer> setListSize(int sizeList) {
+        List<Integer> list = new LinkedList<>();
+        for (int i = 0; i < sizeList; i ++) {
+            list.add(1);
+        }
+        return list;
     }
 }
