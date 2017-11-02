@@ -12,7 +12,7 @@ public class HomeWork {
 
         List<Integer> sourceList = new LinkedList<>();
         for (int i = 0; i < 100; i++) {
-            sourceList.add(randomGenerator(100));
+            sourceList.add(randomGenerator(10));
         }
         List<Integer> shuffleList = sourceList;
         Collections.shuffle(shuffleList);
