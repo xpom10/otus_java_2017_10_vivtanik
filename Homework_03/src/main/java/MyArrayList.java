@@ -1,9 +1,6 @@
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
-public class MyArrayList<T> implements List {
+public class MyArrayList implements List {
 
     private int size;
     private Object[] array;
@@ -42,7 +39,7 @@ public class MyArrayList<T> implements List {
     }
 
     public Object[] toArray() {
-        return new Object[0];
+        return Arrays.copyOf(array, size);
     }
 
     public boolean add(Object o) {
@@ -105,6 +102,7 @@ public class MyArrayList<T> implements List {
     public ListIterator listIterator() {
         return new ListIterator()
         {   int count = 0;
+
             public boolean hasNext() {
                 return count < size;
             }
@@ -134,7 +132,8 @@ public class MyArrayList<T> implements List {
             }
 
             public void set(Object o) {
-            array[count-1] = o;
+                if (count == 0) array[count] = o;
+                else array[count-1] = o;
             }
 
             public void add(Object o) {
@@ -164,6 +163,6 @@ public class MyArrayList<T> implements List {
     }
 
     public Object[] toArray(Object[] a) {
-        return new Object[0];
+        return null;
     }
 }
