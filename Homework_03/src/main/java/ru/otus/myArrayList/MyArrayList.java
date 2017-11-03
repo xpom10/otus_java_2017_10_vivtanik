@@ -1,20 +1,22 @@
+package ru.otus.myArrayList;
+
 import java.util.*;
 
-public class MyArrayList implements List {
+public class MyArrayList<T> implements List {
 
     private int size;
-    private Object[] array;
+    private T[] array;
     private int point = 0;
 
     public MyArrayList(int initSize) {
-        if (initSize > 0) this.array = new Object[initSize];
+        if (initSize > 0) this.array = (T[]) new Object[initSize];
         else if (initSize == 0) {
-            this.array = new Object[]{};
+            this.array = (T[]) new Object[]{};
         }
     }
 
     public MyArrayList() {
-        this.array = new Object[]{};
+        this.array = (T[]) new Object[]{};
     }
 
 
@@ -46,12 +48,14 @@ public class MyArrayList implements List {
         if (point == array.length) {
             this.array = reSize(array.length + 1);
         }
-        array[point++] = o;
+        array[point++] = (T) o;
         return true;
     }
 
-    private Object[] reSize(int newSize) {
-        Object[] newValue = new Object[newSize];
+
+
+    private T[] reSize(int newSize) {
+        T[] newValue = (T[]) new Object[newSize];
         System.arraycopy(array, 0, newValue, 0, point);
         this.size = newValue.length;
         return newValue;
@@ -79,7 +83,7 @@ public class MyArrayList implements List {
     }
 
     public Object set(int index, Object element) {
-        this.array[index] = element;
+        this.array[index] = (T) element;
         return array;
     }
 
@@ -132,8 +136,8 @@ public class MyArrayList implements List {
             }
 
             public void set(Object o) {
-                if (count == 0) array[count] = o;
-                else array[count-1] = o;
+                if (count == 0) array[count] = (T) o;
+                else array[count-1] = (T) o;
             }
 
             public void add(Object o) {
@@ -165,4 +169,6 @@ public class MyArrayList implements List {
     public Object[] toArray(Object[] a) {
         return null;
     }
+
+
 }
