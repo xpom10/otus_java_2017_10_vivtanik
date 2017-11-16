@@ -1,0 +1,10 @@
+
+GarbageCollector: PS MarkSweep
+The number of garbage collections: 6
+Time of garbage collector per minute: 12 ms/m
+---------------------------------------
+GarbageCollector: PS Scavenge
+The number of garbage collections: 4
+Time of garbage collector per minute: 2 ms/m
+---------------------------------------
+Duration of work: 1 m 53 s

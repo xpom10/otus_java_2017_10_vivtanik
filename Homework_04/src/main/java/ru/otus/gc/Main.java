@@ -24,12 +24,12 @@ public class Main {
         mbean.setSize(size);
 
         try {
-            memoryClass.startGainMemory(mbean.getSize());
+            memoryClass.startGainMemory(mbean.getSize(), benchmark);
         } catch (OutOfMemoryError error) {
             System.out.println(error.getLocalizedMessage());
         }
 
-        benchmark.writeStatisticsToFile();
+        benchmark.writeStatisticsToFile("UseParNewGCandConcMarkSweep.txt");
 
     }
 

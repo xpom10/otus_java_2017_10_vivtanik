@@ -9,25 +9,29 @@ public class GainMemoryClass {
 
     private int counter=0;
 
-    public void startGainMemory( int size) {
+    public void startGainMemory(int size, Benchmark benchmark) {
         List<Object> gainList = new LinkedList<>();
+        benchmark.startTime();
 
         while (true) {
 
-            int sizeOfList = size;
-            for (int i = 0; i < sizeOfList; i++) {
+            for (int i = 0; i < size; i++) {
                 gainList.add(new Object[1024][1024]);
             }
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            for (int j = 0; j < sizeOfList /2; j++) {
+            for (int j = 0; j < size /2; j++) {
                 gainList.remove(j);
             }
             this.counter++;
-            new Benchmark().startMonitoring();
+            benchmark.startMonitoring();
         }
+    }
+
+    public int getCounter() {
+        return counter;
     }
 }
