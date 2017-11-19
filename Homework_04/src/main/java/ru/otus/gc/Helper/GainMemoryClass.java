@@ -11,7 +11,9 @@ public class GainMemoryClass {
 
     public void startGainMemory(int size, Benchmark benchmark) {
         List<Object> gainList = new LinkedList<>();
+
         benchmark.startTime();
+        benchmark.startMonitoring();
 
         while (true) {
 
@@ -27,8 +29,10 @@ public class GainMemoryClass {
                 gainList.remove(j);
             }
             this.counter++;
-            benchmark.startMonitoring();
+            benchmark.getCurrentStatistics();
         }
+
+
     }
 
     public int getCounter() {

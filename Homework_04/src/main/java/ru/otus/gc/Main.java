@@ -29,8 +29,8 @@ public class Main {
             System.out.println(error.getLocalizedMessage());
         }
 
-        benchmark.writeStatisticsToFile("UseParNewGCandConcMarkSweep.txt");
-
+//        benchmark.writeStatisticsToFile("111.txt");
+        benchmark.printStatisticsToTerminal();
     }
 
 }

@@ -15,9 +15,13 @@ public class Benchmark implements BenchmarkMBean {
     private Map<String, GCStat> statistics = new HashMap<>();
     private long duration;
     private long startTimeNano;
+    private List<GarbageCollectorMXBean> gcList;
 
     public void startMonitoring() {
-        List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
+        this.gcList = ManagementFactory.getGarbageCollectorMXBeans();
+    }
+
+    public void getCurrentStatistics() {
         for (GarbageCollectorMXBean gc: gcList) {
             if (this.statistics.containsKey(gc.getName())) {
                 GCStat gcStat = statistics.get(gc.getName());
@@ -30,7 +34,6 @@ public class Benchmark implements BenchmarkMBean {
             }
         }
     }
-
 
     public void writeStatisticsToFile(String filename) {
         try {
@@ -55,6 +58,21 @@ public class Benchmark implements BenchmarkMBean {
 
     }
 
+
+    public void printStatisticsToTerminal() {
+        StringBuilder str = new StringBuilder();
+        str.append("\n");
+        Set<String> set = this.statistics.keySet();
+        str.append("---------------------------------------\n");
+        for (String key : set) {
+            str.append("GarbageCollector: ").append(key).append("\n");
+            str.append("The number of garbage collections: ").append(statistics.get(key).getCount()).append("\n");
+            str.append("Time of garbage collector per minute: ").append(statistics.get(key).getTime() / duration).append(" ms/m").append("\n");
+            str.append("---------------------------------------\n");
+        }
+        str.append("Duration of work: ").append(duration/60).append(" m ").append(duration % 60).append(" s").append("\n");
+        System.out.println(str);
+    }
 
     @Override
     public int getSize() {
