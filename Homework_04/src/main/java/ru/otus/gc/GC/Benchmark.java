@@ -60,6 +60,7 @@ public class Benchmark implements BenchmarkMBean {
 
 
     public void printStatisticsToTerminal() {
+        this.duration = (System.nanoTime() - startTimeNano) / 1000000000;
         StringBuilder str = new StringBuilder();
         str.append("\n");
         Set<String> set = this.statistics.keySet();

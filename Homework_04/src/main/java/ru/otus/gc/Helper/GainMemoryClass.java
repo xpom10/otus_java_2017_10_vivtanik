@@ -29,7 +29,7 @@ public class GainMemoryClass {
                 gainList.remove(j);
             }
             this.counter++;
-            benchmark.getCurrentStatistics();
+
         }
 
 

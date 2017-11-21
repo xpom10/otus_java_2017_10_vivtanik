@@ -28,8 +28,7 @@ public class Main {
         } catch (OutOfMemoryError error) {
             System.out.println(error.getLocalizedMessage());
         }
-
-//        benchmark.writeStatisticsToFile("111.txt");
+        benchmark.getCurrentStatistics();
         benchmark.printStatisticsToTerminal();
     }
 
