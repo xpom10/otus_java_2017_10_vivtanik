@@ -3,6 +3,8 @@ package ru.otus.test.TestPackage;
 import ru.otus.test.MyTestFramework.Annotations.MyAfter;
 import ru.otus.test.MyTestFramework.Annotations.MyBefore;
 import ru.otus.test.MyTestFramework.Annotations.MyTest;
+import ru.otus.test.MyTestFramework.Exception.MyAssertionError;
+import ru.otus.test.MyTestFramework.MyAssert;
 
 public class ExamplePackageTest {
 
@@ -17,8 +19,9 @@ public class ExamplePackageTest {
     }
 
     @MyTest
-    public void test1() {
+    public void test1() throws MyAssertionError {
         System.out.println("test");
+        MyAssert.MyAssertFalse(true);
     }
 
 }

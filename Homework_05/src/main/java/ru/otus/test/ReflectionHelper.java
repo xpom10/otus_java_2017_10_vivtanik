@@ -1,8 +1,13 @@
 package ru.otus.test;
 
+import ru.otus.test.MyTestFramework.Annotations.MyAfter;
+import ru.otus.test.MyTestFramework.Annotations.MyBefore;
+import ru.otus.test.MyTestFramework.Annotations.MyTest;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +17,7 @@ public class ReflectionHelper {
     private ReflectionHelper() {
     }
 
-    static <T> T instantiate(Class<T> type, Object... args) {
+    public static <T> T instantiate(Class<T> type, Object... args) {
         try {
             if (args.length == 0) {
                 return type.newInstance();
@@ -60,7 +65,7 @@ public class ReflectionHelper {
         }
     }
 
-    static Object callMethod(Object object, String name, Object... args) {
+    public static Object callMethod(Object object, String name, Object... args) {
         Method method = null;
         boolean isAccessible = true;
         try {
@@ -85,5 +90,33 @@ public class ReflectionHelper {
         return classes.toArray(new Class<?>[classes.size()]);
     }
 
+    public static  Method getBeforeMethod(Method... methods) {
+        for (Method met : methods) {
+            if (met.getAnnotation(MyBefore.class) != null) {
+                return met;
+            }
+        }
+        return null;
+    }
+
+    public static Method getAfterMethod(Method... methods) {
+        for (Method met : methods) {
+            if (met.getAnnotation(MyAfter.class) != null) {
+                return met;
+            }
+        }
+        return null;
+    }
+
+    public static Method[] getTestMethods(Method... methods) {
+       List<Method> testMethods = new ArrayList<>();
+        for (Method met : methods) {
+            if (met.getAnnotation(MyTest.class) != null) {
+                testMethods.add(met);
+            }
+        }
+        Method[] arrayTest = new Method[testMethods.size()];
+        return testMethods.toArray(arrayTest);
+    }
 
 }

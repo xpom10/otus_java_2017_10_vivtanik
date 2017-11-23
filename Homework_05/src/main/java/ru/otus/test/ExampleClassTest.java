@@ -17,6 +17,11 @@ public class ExampleClassTest {
 
     @MyTest
     public void test1() {
-        System.out.println("test");
+        System.out.println("test1");
+    }
+
+    @MyTest
+    public void test2() {
+        System.out.println("test2");
     }
 }
