@@ -3,6 +3,8 @@ package ru.otus.test;
 import ru.otus.test.MyTestFramework.Annotations.MyAfter;
 import ru.otus.test.MyTestFramework.Annotations.MyBefore;
 import ru.otus.test.MyTestFramework.Annotations.MyTest;
+import ru.otus.test.MyTestFramework.Exception.MyAssertionError;
+import ru.otus.test.MyTestFramework.TestFramework;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("SameParameterValue")
+
 public class ReflectionHelper {
     private ReflectionHelper() {
     }
@@ -73,8 +75,10 @@ public class ReflectionHelper {
             isAccessible = method.isAccessible();
             method.setAccessible(true);
             return method.invoke(object, args);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            System.out.println(e);
+        } catch (InvocationTargetException ex) {
+            ex.getTargetException().printStackTrace();
         } finally {
             if (method != null && !isAccessible) {
                 method.setAccessible(false);

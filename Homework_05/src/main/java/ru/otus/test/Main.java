@@ -10,7 +10,9 @@ public class Main {
 
     public static void main(String[] args) throws MyAssertionError {
 
-         new TestFramework(ExampleClassTest.class).run();
+         new TestFramework(ExampleClassTestOne.class,ExampleClassTestTwo.class).run();
+
+         new TestFramework("ru.otus.test.TestPackage").run();
 
 
     }

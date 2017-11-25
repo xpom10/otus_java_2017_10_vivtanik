@@ -1,6 +1,6 @@
 package ru.otus.test.MyTestFramework.Exception;
 
-public class MyAssertionError extends Exception {
+public class MyAssertionError extends RuntimeException {
 
     public MyAssertionError() {
         super();
