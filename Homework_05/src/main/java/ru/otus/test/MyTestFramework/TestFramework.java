@@ -31,7 +31,6 @@ public class TestFramework {
         classLoadersList.add(ClasspathHelper.contextClassLoader());
         classLoadersList.add(ClasspathHelper.staticClassLoader());
 
-
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setScanners(new SubTypesScanner(false), new ResourcesScanner())
                 .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
@@ -42,16 +41,23 @@ public class TestFramework {
     }
 
     public void run() {
-
         for (Class aClass : classes) {
-            Object testObject = ReflectionHelper.instantiate(aClass);
-
             Method[] a = aClass.getMethods();
-            Method afterMethod = ReflectionHelper.getAfterMethod(a);
-            Method beforeMethod = ReflectionHelper.getBeforeMethod(a);
-            Method[] testMethods = ReflectionHelper.getTestMethods(a);
+            Method afterMethod;
+            Method beforeMethod;
+            Method[] testMethods;
+
+            try {
+                afterMethod = ReflectionHelper.getAfterMethod(a);
+                beforeMethod = ReflectionHelper.getBeforeMethod(a);
+                testMethods = ReflectionHelper.getTestMethods(a);
+            } catch (MyAssertionError error) {
+                System.out.println(error.getMessage() + ". Classname: " + aClass.getName() );
+                continue;
+            }
 
             for (Method test : testMethods) {
+                Object testObject = ReflectionHelper.instantiate(aClass);
                 try {
                     if (beforeMethod != null) {
                         ReflectionHelper.callMethod(testObject, beforeMethod.getName());
@@ -66,11 +72,7 @@ public class TestFramework {
                     System.out.println(e.getMessage());
                 }
             }
-
         }
-
-
     }
-
 
 }

@@ -16,6 +16,7 @@ public class ExampleClassTestTwo {
         System.out.println("After class 2");
     }
 
+
     @MyTest
     public void test1() {
         System.out.println("Test1 class 2");

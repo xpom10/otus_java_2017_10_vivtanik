@@ -77,7 +77,8 @@ public class ReflectionHelper {
             return method.invoke(object, args);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             System.out.println(e);
-        } catch (InvocationTargetException ex) {
+        }
+        catch (InvocationTargetException ex) {
             ex.getTargetException().printStackTrace();
         } finally {
             if (method != null && !isAccessible) {
@@ -95,30 +96,41 @@ public class ReflectionHelper {
     }
 
     public static  Method getBeforeMethod(Method... methods) {
+        Method m = null;
+        int count = 0;
         for (Method met : methods) {
             if (met.getAnnotation(MyBefore.class) != null) {
-                return met;
+                m = met;
+                count++;
             }
         }
-        return null;
+        if (count > 1) throw  new MyAssertionError("Too many before methods in class, before method may be only one");
+        return m;
     }
 
     public static Method getAfterMethod(Method... methods) {
+        Method m = null;
+        int count = 0;
         for (Method met : methods) {
             if (met.getAnnotation(MyAfter.class) != null) {
-                return met;
+                m = met;
+                count++;
             }
         }
-        return null;
+        if (count > 1 ) throw new MyAssertionError("Too many after methods in class, after method may be only one");
+        return m;
     }
 
     public static Method[] getTestMethods(Method... methods) {
-       List<Method> testMethods = new ArrayList<>();
+       int count = 0;
+        List<Method> testMethods = new ArrayList<>();
         for (Method met : methods) {
             if (met.getAnnotation(MyTest.class) != null) {
                 testMethods.add(met);
+                count++;
             }
         }
+        if (count==0) throw new MyAssertionError("Test methods not found");
         Method[] arrayTest = new Method[testMethods.size()];
         return testMethods.toArray(arrayTest);
     }
