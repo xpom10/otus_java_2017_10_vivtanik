@@ -1,4 +1,6 @@
-package ru.otus.atm;
+package ru.otus;
+
+import ru.otus.atm.AtmImpl;
 
 public class Main {
 
