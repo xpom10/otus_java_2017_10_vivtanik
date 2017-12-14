@@ -1,6 +1,6 @@
 import com.google.gson.Gson;
 import ru.otus.myJson.Car;
-import ru.otus.myJson.Color;
+import ru.otus.myJson.Specification;
 import ru.otus.myJson.MyJson;
 
 public class Main {
@@ -8,15 +8,19 @@ public class Main {
 
     public static void main(String[] args) throws IllegalAccessException {
 
-        Color color = new Color();
-        Car car1 = new Car("kia","rio",9,color);
+        Specification specification = new Specification();
+        Car car = new Car("kia","rio",9, specification);
         Gson gson = new Gson();
 
         MyJson json = new MyJson();
-        String myJson = json.serializeJSON(car1);
-        String gJson = gson.toJson(car1);
+        String myJson = json.serializeJSON(car);
         System.out.println(myJson);
-        System.out.println(gJson);
+
+        Car car1 = gson.fromJson(myJson,Car.class);
+        String toGSON = gson.toJson(car1);
+        System.out.println(toGSON);
+
+        System.out.println(toGSON.equals(myJson));
 
     }
 }

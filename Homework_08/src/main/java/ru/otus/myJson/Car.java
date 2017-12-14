@@ -6,15 +6,15 @@ public class Car implements Serializable {
 
     private final String brand;
     private final String model;
-    private final Color colors;
+    private final Specification specification;
     private final Integer count;
 
 
 
-    public Car(String brandCar, String modelCar, Integer countCar, Color colors) {
+    public Car(String brandCar, String modelCar, Integer countCar, Specification colors) {
         this.brand = brandCar;
         this.model = modelCar;
-        this.colors = colors;
+        this.specification = colors;
         this.count = countCar;
 
 
@@ -32,7 +32,7 @@ public class Car implements Serializable {
         return count;
     }
 
-    public Color getColors() {
-        return colors;
+    public Specification getSpecification() {
+        return specification;
     }
 }
