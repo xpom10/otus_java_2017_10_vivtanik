@@ -16,7 +16,7 @@ public class ExampleClassTestOne {
         System.out.println("After class 1");
     }
 
-/*    @MyTest
+    @MyTest
     public void test1() throws MyAssertionError {
         System.out.println("test1 class 1");
     }
@@ -24,5 +24,5 @@ public class ExampleClassTestOne {
     @MyTest
     public void test2() {
         System.out.println("test2 class 1");
-    }*/
+    }
 }

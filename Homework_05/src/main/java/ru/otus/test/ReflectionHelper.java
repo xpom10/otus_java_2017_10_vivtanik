@@ -4,7 +4,6 @@ import ru.otus.test.MyTestFramework.Annotations.MyAfter;
 import ru.otus.test.MyTestFramework.Annotations.MyBefore;
 import ru.otus.test.MyTestFramework.Annotations.MyTest;
 import ru.otus.test.MyTestFramework.Exception.MyAssertionError;
-import ru.otus.test.MyTestFramework.TestFramework;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +66,7 @@ public class ReflectionHelper {
         }
     }
 
-    public static Object callMethod(Object object, String name, Object... args) {
+    public static Object callMethod(Object object, String name, Object... args) throws InvocationTargetException {
         Method method = null;
         boolean isAccessible = true;
         try {
@@ -77,9 +76,6 @@ public class ReflectionHelper {
             return method.invoke(object, args);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             System.out.println(e);
-        }
-        catch (InvocationTargetException ex) {
-            ex.getTargetException().printStackTrace();
         } finally {
             if (method != null && !isAccessible) {
                 method.setAccessible(false);

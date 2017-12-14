@@ -9,8 +9,10 @@ import org.reflections.util.FilterBuilder;
 import ru.otus.test.MyTestFramework.Exception.MyAssertionError;
 import ru.otus.test.ReflectionHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +43,7 @@ public class TestFramework {
     }
 
     public void run() {
+        int fail = 0;
         for (Class aClass : classes) {
             Method[] a = aClass.getMethods();
             Method afterMethod;
@@ -48,8 +51,8 @@ public class TestFramework {
             Method[] testMethods;
 
             try {
-                afterMethod = ReflectionHelper.getAfterMethod(a);
                 beforeMethod = ReflectionHelper.getBeforeMethod(a);
+                afterMethod = ReflectionHelper.getAfterMethod(a);
                 testMethods = ReflectionHelper.getTestMethods(a);
             } catch (MyAssertionError error) {
                 System.out.println(error.getMessage() + ". Classname: " + aClass.getName() );
@@ -58,21 +61,37 @@ public class TestFramework {
 
             for (Method test : testMethods) {
                 Object testObject = ReflectionHelper.instantiate(aClass);
-                try {
                     if (beforeMethod != null) {
-                        ReflectionHelper.callMethod(testObject, beforeMethod.getName());
+                        try {
+                            ReflectionHelper.callMethod(testObject, beforeMethod.getName());
+                        } catch (InvocationTargetException e) {
+                            System.out.println(e.getTargetException().getMessage());
+
+                            fail++;
+                            continue;
+                        }
                     }
                     if (test != null) {
-                        ReflectionHelper.callMethod(testObject, test.getName());
+                        try {
+                            ReflectionHelper.callMethod(testObject, test.getName());
+                        } catch (InvocationTargetException e) {
+                            e.getTargetException().printStackTrace();
+                            fail++;
+                            continue;
+                        }
                     }
                     if (afterMethod != null) {
-                        ReflectionHelper.callMethod(testObject, afterMethod.getName());
+                        try {
+                            ReflectionHelper.callMethod(testObject, afterMethod.getName());
+                        } catch (InvocationTargetException e) {
+                            System.out.println(Arrays.toString(e.getTargetException().getStackTrace()));
+                            fail++;
+                        }
                     }
-                } catch (MyAssertionError e) {
-                    System.out.println(e.getMessage());
                 }
             }
+        System.out.println(fail + " ***************");
         }
-    }
-
 }
+
+
