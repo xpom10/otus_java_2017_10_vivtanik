@@ -129,7 +129,7 @@ public class AtmImpl implements AtmInterface {
             if (nominal < 1) {
                 throw new Exception("Номинал валюты не может быть меньше 1");
             }
-            if (cell.get(nominal) < 1) {
+            if (cell.get(nominal) < 1 || cell.get(nominal) == null) {
                 throw new Exception("Количество купюр в АТМ не может быть отрицательным");
             }
         }
@@ -154,7 +154,7 @@ public class AtmImpl implements AtmInterface {
             if (issOfCurrency.get(key) == 0) {
                 continue;
             }
-            System.out.print("Количество купюр: " + issOfCurrency.get(key) + " номиналом " + key + " \n");
+            System.out.print("Выдано количество купюр " + issOfCurrency.get(key) + " номиналом " + key + " \n");
         }
     }
 }
