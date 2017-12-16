@@ -1,6 +1,5 @@
 package ru.otus.myJson;
 
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -8,115 +7,71 @@ import java.util.List;
 
 public class MyJson {
 
+    private final static String OBJECT = "OBJECT";
 
     public String serializeJSON(Object jsonObject) throws IllegalAccessException {
+        StringBuilder builder = new StringBuilder();
         if (jsonObject == null) {
-            return "null";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        Field[] objectFields = jsonObject.getClass().getDeclaredFields();
-        for (Field field : objectFields) {
-            field.setAccessible(true);
-            switch (serializeFieldValue(field.get(jsonObject))) {
-                case "STRING": builder.append(serializeString(field,jsonObject));
-                    break;
-                case "NUMBER": builder.append(serializeNumber(field,jsonObject));
-                    break;
-                case "ARRAY": builder.append(serializeArray(field,jsonObject));
-                    break;
-                case "COLLECTION": builder.append(serializeCollection(field,jsonObject));
-                    break;
-                case "OBJECT": builder.append(serializeObject(field,jsonObject));
-                    break;
-                default: break;
+            return builder.append(("null,")).toString();
+        } else if (serializeFieldValue(jsonObject).equals(OBJECT)) {
+            builder.append("{");
+            Field[]fields = jsonObject.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (builder.toString().endsWith("}")) {
+                    builder.append(",\"").append(field.getName()).append("\":");
+                } else {
+                    builder.append("\"").append(field.getName()).append("\":");
+                }
+                builder.append(serializeJSON(field.get(jsonObject)));
             }
-        }
+            if (builder.toString().endsWith(",")) {
+                builder.deleteCharAt(builder.length() - 1).append("}");
+            } else builder.append("}");
+        } else builder.append(serializeFieldValue(jsonObject));
 
-        builder.deleteCharAt(builder.length() - 1).append("}");
         return builder.toString();
     }
 
-    private String serializeFieldValue(Object field) {
-
-        Class  cl = field.getClass();
+    private String serializeFieldValue(Object object) throws IllegalAccessException {
+        Class  cl = object.getClass();
         if (cl.equals(String.class) || cl.equals(char.class) || cl.equals(Character.class))
-            return "STRING";
-        if (cl.isPrimitive() || Number.class.isInstance(field))
-            return "NUMBER";
+            return serializeString(object);
+        if (cl.isPrimitive() || Number.class.isInstance(object) || Boolean.class.isInstance(object))
+            return serializeNumberOrBoolean(object);
         if (cl.isArray())
-            return "ARRAY";
-        if (Collection.class.isInstance(field))
-            return "COLLECTION";
-        else return "OBJECT";
+            return serializeArray(object);
+        if (Collection.class.isInstance(object))
+            return serializeCollection(object);
+        else return OBJECT;
     }
 
-    private String serializeString(Field field, Object jsonObject) throws IllegalAccessException {
-        return "\"" + field.getName() + "\":\"" + field.get(jsonObject) + "\",";
+    private String serializeString(Object jsonObject) throws IllegalAccessException {
+        return "\"" + jsonObject.toString() + "\",";
     }
 
-    private String serializeNumber(Field field, Object jsonObject) throws IllegalAccessException {
-        return "\"" + field.getName() + "\":" + field.get(jsonObject) + ",";
+    private String serializeNumberOrBoolean(Object jsonObject) throws IllegalAccessException {
+        return jsonObject.toString() + ",";
     }
 
-    private String serializeArray(Field field, Object jsonObject) throws IllegalAccessException {
+    private String serializeArray(Object jsonObject) throws IllegalAccessException {
         StringBuilder builder = new StringBuilder();
-        builder.append("\"").append(field.getName()).append("\":[");
-        int a = Array.getLength(field.get(jsonObject));
+        builder.append("[");
+        int a = Array.getLength(jsonObject);
         for (int i = 0; i < a; i++) {
-            Object element = Array.get(field.get(jsonObject), i);
-            switch (serializeFieldValue(Array.get(field.get(jsonObject), i))) {
-                case "STRING": builder.append("\"").append(element).append("\",");
-                    break;
-                case "NUMBER": builder.append(element).append(",");
-                    break;
-                case "ARRAY": builder.append(serializeArray(field,jsonObject));
-                    break;
-                case "COLLECTION":
-                    break;
-                case "OBJECT": builder.append(serializeObject(field,jsonObject));
-                    break;
-                default: break;
-            }
+            builder.append(serializeFieldValue(Array.get(jsonObject, i)));
         }
         builder.deleteCharAt(builder.length() - 1).append("],");
         return builder.toString();
     }
 
-    private String serializeCollection(Field field, Object jsonObject) throws IllegalAccessException {
+    private String serializeCollection(Object jsonObject) throws IllegalAccessException {
         StringBuilder builder = new StringBuilder();
-        builder.append("\"").append(field.getName()).append("\":[");
-        List list = (List) field.get(jsonObject);
+        builder.append("[");
+        List list = (List) (jsonObject);
         for (Object element : list) {
-            switch (serializeFieldValue(element)) {
-                case "STRING":
-                    builder.append("\"").append(element).append("\",");
-                    break;
-                case "NUMBER":
-                    builder.append(element).append(",");
-                    break;
-                case "ARRAY":
-                    builder.append(serializeArray(field, jsonObject));
-                    break;
-                case "COLLECTION":
-                    builder.append(serializeCollection(field,jsonObject));
-                    break;
-                case "OBJECT":
-                    builder.append(serializeObject(field, jsonObject));
-                    break;
-                default:
-                    break;
-            }
+            builder.append(serializeFieldValue(element));
         }
-        builder.deleteCharAt(builder.length() - 1).append("],");
-        return builder.toString();
-    }
-
-    private String serializeObject(Field field, Object jsonObject) throws IllegalAccessException {
-        String builder = "\"" + field.getName() + "\":" +
-                serializeJSON(field.get(jsonObject)) +
-                ",";
-        return builder;
+        return builder.deleteCharAt(builder.length() - 1).append("],").toString();
     }
 }

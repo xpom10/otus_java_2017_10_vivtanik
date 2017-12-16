@@ -1,7 +1,7 @@
 import com.google.gson.Gson;
 import ru.otus.myJson.Car;
-import ru.otus.myJson.Specification;
 import ru.otus.myJson.MyJson;
+import ru.otus.myJson.Specification;
 
 public class Main {
 
