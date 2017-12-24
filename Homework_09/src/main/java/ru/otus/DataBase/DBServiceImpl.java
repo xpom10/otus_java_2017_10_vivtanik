@@ -7,7 +7,6 @@ import ru.otus.UserData.UserDataSet;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +15,9 @@ public class DBServiceImpl implements DBService {
 
     private final String CREATE_TABLES = "create table if not exists user (id bigint auto_increment, name varchar(256), age int(3), primary key (id))";
     private final String DROP_TABLE = "drop table user";
-    private final String INSERT_USER = "insert into user (%s) values (%s)";
-    private final String SELECT_USER_NAME = "select * from user where name = '%s'";
-    private final String SELECT_USER_ID = "select * from user where id = '%s'";
+    private final String INSERT_USER = "insert into user (name,age) values (?,?)";
+    private final String SELECT_USER_NAME = "select * from user where name = (?)";
+    private final String SELECT_USER_ID = "select * from user where id = (?)";
     private final String SELECT_USERS = "select * from user";
 
     public DBServiceImpl() {
@@ -41,44 +40,49 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public void prepareTables() throws SQLException {
-        try(Statement statement = connection.createStatement()) {
-            statement.execute(CREATE_TABLES);
-            System.out.println("Table create");
-        }
+        Executor exec = new Executor(getConnection());
+        exec.execQuery(CREATE_TABLES);
+        System.out.println("Table create");
     }
+
 
     @Override
-    public <T extends DataSet> void save(T user) throws SQLException, IllegalAccessException {
+    public <T extends DataSet> void save(T user) throws SQLException, IllegalAccessException, NoSuchFieldException {
         Executor exec = new Executor(getConnection());
         Field[] fields = user.getClass().getDeclaredFields();
-
-        StringBuilder names = new StringBuilder();
-        StringBuilder values = new StringBuilder();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            names.append(field.getName()).append(",");
-            values.append("\'").append(field.get(user)).append("\',");
-        }
-        names.deleteCharAt(names.length() - 1);
-        values.deleteCharAt(values.length() - 1);
-        exec.execQuery(String.format(INSERT_USER, names.toString(),values.toString()));
+        exec.execQuery(INSERT_USER, statement -> {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.getName().equals("name")) {
+                    statement.setString(1, (String) field.get(user));
+                } else if (field.getName().equals("age")) {
+                    statement.setInt(2, (Integer) field.get(user));
+                }
+            }
+            statement.execute();
+        });
 
     }
+
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException, IllegalAccessException, InstantiationException {
         Executor exec = new Executor(getConnection());
-        return exec.execQuery(String.format(SELECT_USER_ID, id), result -> {
-            if (result.next()) {
-                Object user = clazz.newInstance();
-                Field[] fields = clazz.getDeclaredFields();
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    field.set(user, result.getObject(field.getName()));
-                }
-                return (T) user;
-            } else return null;
-        });
+        return exec.execQuery(SELECT_USER_ID,
+                statement -> {
+                    statement.setLong(1,id);
+                    statement.execute();
+                }, result -> {
+                    if (result.next()) {
+                        Object user = clazz.newInstance();
+                        Field[] fields = clazz.getDeclaredFields();
+                        for (Field field : fields) {
+                            field.setAccessible(true);
+                            field.set(user, result.getObject(field.getName()));
+                        }
+                        return (T)user;
+                    } else return null;
+                });
     }
 
     @Override
@@ -97,9 +101,13 @@ public class DBServiceImpl implements DBService {
     @Override
     public long getId(String name) throws SQLException, IllegalAccessException, InstantiationException {
         Executor exec = new Executor(getConnection());
-        return exec.execQuery(String.format(SELECT_USER_NAME, name), result -> {
-            result.next();
-            return result.getLong("id");
+        return exec.execQuery(SELECT_USER_NAME, statement -> {
+            statement.setString(1,name);
+            statement.execute();
+        }, result -> {
+            if (result.next()) {
+                return result.getLong("id");
+            } else return null;
         });
 
     }
@@ -107,10 +115,9 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public void deleteTables() throws SQLException {
-        try(Statement statement = connection.createStatement()) {
-            statement.execute(DROP_TABLE);
-            System.out.println("Table dropped");
-        }
+        Executor exec = new Executor(getConnection());
+        exec.execQuery(DROP_TABLE);
+        System.out.println("Table dropped");
     }
 
     @Override

@@ -11,7 +11,7 @@ public interface DBService extends AutoCloseable{
 
     void prepareTables() throws SQLException;
 
-    <T extends DataSet> void save(T user) throws SQLException, IllegalAccessException;
+    <T extends DataSet> void save(T user) throws SQLException, IllegalAccessException, NoSuchFieldException;
 
     <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException, IllegalAccessException, InstantiationException;
 
