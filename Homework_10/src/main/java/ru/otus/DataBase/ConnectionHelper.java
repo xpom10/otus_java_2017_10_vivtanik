@@ -9,7 +9,7 @@ import ru.otus.UserData.DataSet;
 import ru.otus.UserData.PhoneDataSet;
 import ru.otus.UserData.UserDataSet;
 
-class ConnectionHelper {
+public class ConnectionHelper {
 
     static SessionFactory getSessionFactory() {
         Configuration configuration = new Configuration();
