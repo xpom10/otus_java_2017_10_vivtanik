@@ -1,13 +1,10 @@
-package ru.otus.DataBase;
+package ru.otus.DAO;
 
 import ru.otus.UserData.UserDataSet;
 
 import java.util.List;
 
-public interface DBService {
-
-    String getLocalStatus();
-
+public interface UserDAO {
     void save(UserDataSet user);
 
     UserDataSet load(long id);
@@ -15,6 +12,4 @@ public interface DBService {
     List<UserDataSet> getAllUsers();
 
     UserDataSet getByName(String name);
-
-    void shutdown();
 }

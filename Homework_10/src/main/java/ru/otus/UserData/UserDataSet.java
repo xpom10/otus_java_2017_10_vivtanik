@@ -1,26 +1,32 @@
 package ru.otus.UserData;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
 public class UserDataSet extends DataSet{
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "age")
     private int age;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private AddressDataSet address;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private PhoneDataSet phone;
 
 
     public UserDataSet() {
     }
 
-    public UserDataSet(String name, int age) {
+    public UserDataSet(String name, int age, AddressDataSet address, PhoneDataSet phone) {
         this.name = name;
         this.age = age;
+        this.address = address;
+        this.phone = phone;
     }
 
     public String getName() {
@@ -33,6 +39,6 @@ public class UserDataSet extends DataSet{
 
     @Override
     public String toString() {
-        return String.format("UserDataSet{name = '%s', age = %s}",name,age);
+        return String.format("UserDataSet{name = '%s', age = %s, %s, %s}",name,age,address,phone);
     }
 }

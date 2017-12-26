@@ -1,132 +1,102 @@
 package ru.otus.DataBase;
 
-import ru.otus.Executor.Executor;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import ru.otus.DAO.UserDAOImpl;
+import ru.otus.UserData.AddressDataSet;
 import ru.otus.UserData.DataSet;
+import ru.otus.UserData.PhoneDataSet;
 import ru.otus.UserData.UserDataSet;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class DBServiceImpl implements DBService {
-    private final Connection connection;
 
-    private final String CREATE_TABLES = "create table if not exists user (id bigint auto_increment, name varchar(256), age int(3), primary key (id))";
-    private final String DROP_TABLE = "drop table user";
-    private final String INSERT_USER = "insert into user (name,age) values (?,?)";
-    private final String SELECT_USER_NAME = "select * from user where name = (?)";
-    private final String SELECT_USER_ID = "select * from user where id = (?)";
-    private final String SELECT_USERS = "select * from user";
+    private final SessionFactory sessionFactory;
 
     public DBServiceImpl() {
-        this.connection = ConnectionHelper.getConnection();
+        Configuration configuration = new Configuration();
+
+        configuration.addAnnotatedClass(DataSet.class);
+        configuration.addAnnotatedClass(UserDataSet.class);
+        configuration.addAnnotatedClass(PhoneDataSet.class);
+        configuration.addAnnotatedClass(AddressDataSet.class);
+
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_example");
+        configuration.setProperty("hibernate.connection.username", "xpom10");
+        configuration.setProperty("hibernate.connection.password", "Passw0rd");
+        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+        configuration.setProperty("hibernate.connection.useSSL", "false");
+        configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
+
+        sessionFactory = createSessionFactory(configuration);
+    }
+
+    private static SessionFactory createSessionFactory(Configuration configuration) {
+        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+        builder.applySettings(configuration.getProperties());
+        ServiceRegistry serviceRegistry = builder.build();
+        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     @Override
-    public String getMetaData() {
-        try {
-            return "Connected to: " + connection.getMetaData().getURL() + "\n" +
-                    "DB name: " + connection.getMetaData().getDatabaseProductName() + "\n" +
-                    "DB version: " + connection.getMetaData().getDatabaseProductVersion() + "\n" +
-                    "Driver: " + connection.getMetaData().getDriverName();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return e.getMessage();
+    public String getLocalStatus() {
+        return runInSession(session -> session.getTransaction().getStatus().name());
+    }
+
+    @Override
+    public void save(UserDataSet user) {
+        try(Session session = sessionFactory.openSession()) {
+            UserDAOImpl dao = new UserDAOImpl(session);
+            dao.save(user);
         }
-
     }
 
     @Override
-    public void prepareTables() throws SQLException {
-        Executor exec = new Executor(getConnection());
-        exec.execQuery(CREATE_TABLES);
-        System.out.println("Table create");
-    }
-
-
-    @Override
-    public <T extends DataSet> void save(T user) throws SQLException, IllegalAccessException, NoSuchFieldException {
-        Executor exec = new Executor(getConnection());
-        Field[] fields = user.getClass().getDeclaredFields();
-        exec.execQuery(INSERT_USER, statement -> {
-            for (Field field : fields) {
-                field.setAccessible(true);
-                if (field.getName().equals("name")) {
-                    statement.setString(1, (String) field.get(user));
-                } else if (field.getName().equals("age")) {
-                    statement.setInt(2, (Integer) field.get(user));
-                }
-            }
-            statement.execute();
+    public UserDataSet load(long id) {
+        return runInSession(session -> {
+            UserDAOImpl dao = new UserDAOImpl(session);
+            return dao.load(id);
         });
-
-    }
-
-
-    @Override
-    public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException, IllegalAccessException, InstantiationException {
-        Executor exec = new Executor(getConnection());
-        return exec.execQuery(SELECT_USER_ID,
-                statement -> {
-                    statement.setLong(1,id);
-                    statement.execute();
-                }, result -> {
-                    if (result.next()) {
-                        Object user = clazz.newInstance();
-                        Field[] fields = clazz.getDeclaredFields();
-                        for (Field field : fields) {
-                            field.setAccessible(true);
-                            field.set(user, result.getObject(field.getName()));
-                        }
-                        return (T)user;
-                    } else return null;
-                });
     }
 
     @Override
-    public List<UserDataSet> getAllUsers() throws SQLException, IllegalAccessException, InstantiationException {
-        Executor exec = new Executor(getConnection());
-        return exec.execQuery(SELECT_USERS, result -> {
-            List<UserDataSet> list = new ArrayList<>();
-            while (result.next()) {
-                list.add(new UserDataSet(result.getString("name"),result.getInt("age")));
-            }
-            return list;
+    public List<UserDataSet> getAllUsers() {
+        return runInSession(session -> {
+            UserDAOImpl dao = new UserDAOImpl(session);
+            return dao.getAllUsers();
         });
-
     }
 
+
     @Override
-    public long getId(String name) throws SQLException, IllegalAccessException, InstantiationException {
-        Executor exec = new Executor(getConnection());
-        return exec.execQuery(SELECT_USER_NAME, statement -> {
-            statement.setString(1,name);
-            statement.execute();
-        }, result -> {
-            if (result.next()) {
-                return result.getLong("id");
-            } else return null;
+    public UserDataSet getByName(String name) {
+        return runInSession(session -> {
+            UserDAOImpl dao = new UserDAOImpl(session);
+            return dao.getByName(name);
         });
-
-    }
-
-
-    @Override
-    public void deleteTables() throws SQLException {
-        Executor exec = new Executor(getConnection());
-        exec.execQuery(DROP_TABLE);
-        System.out.println("Table dropped");
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
-        System.out.println("Connection close!");
+    public void shutdown() {
+        sessionFactory.close();
+
     }
 
-    private Connection getConnection() {
-        return connection;
+    private <R> R runInSession(Function<Session, R> function) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            R result = function.apply(session);
+            transaction.commit();
+            return result;
+        }
     }
 }

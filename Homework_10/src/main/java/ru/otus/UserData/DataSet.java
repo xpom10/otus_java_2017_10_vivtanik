@@ -1,9 +1,11 @@
 package ru.otus.UserData;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-@Entity
+@MappedSuperclass
 public abstract class DataSet {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     public long getId() {
