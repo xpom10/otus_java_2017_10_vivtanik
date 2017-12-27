@@ -1,10 +1,12 @@
 package ru.otus.UserData;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
-public class UserDataSet extends DataSet{
+public class UserDataSet extends DataSet {
 
     @Column(name = "name")
     private String name;
@@ -15,18 +17,17 @@ public class UserDataSet extends DataSet{
     @OneToOne(cascade = CascadeType.ALL)
     private AddressDataSet address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private PhoneDataSet phone;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PhoneDataSet> phones = new ArrayList<>();
 
 
     public UserDataSet() {
     }
 
-    public UserDataSet(String name, int age, AddressDataSet address, PhoneDataSet phone) {
+    public UserDataSet(String name, int age, AddressDataSet address) {
         this.name = name;
         this.age = age;
         this.address = address;
-        this.phone = phone;
     }
 
     public String getName() {
@@ -37,8 +38,13 @@ public class UserDataSet extends DataSet{
         return age;
     }
 
+    public void addPhone(PhoneDataSet ph) {
+        this.phones.add(ph);
+        ph.setUser(this);
+    }
+
     @Override
     public String toString() {
-        return String.format("UserDataSet{name = '%s', age = %s, %s, %s}",name,age,address,phone);
+        return String.format("UserDataSet{name = '%s', age = %s, %s, %s}", name, age, address, phones);
     }
 }
