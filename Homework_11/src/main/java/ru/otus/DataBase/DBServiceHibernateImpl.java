@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class DBServiceHibernateImpl implements DBService {
 
     private final SessionFactory sessionFactory;
-    private CacheEngineImpl<Long,? extends DataSet> cache;
+    private CacheEngineImpl<Long,DataSet> cache;
 
     public DBServiceHibernateImpl() {
         sessionFactory = ConnectionHelper.getSessionFactory();
@@ -31,16 +31,24 @@ public class DBServiceHibernateImpl implements DBService {
         try(Session session = sessionFactory.openSession()) {
             UserDAOImpl dao = new UserDAOImpl(session);
             dao.save(user);
+            System.out.println("Write to cache with id: " + user.getId());
+            cache.put(user.getId(),new MyElement<>(user));
         }
     }
 
     @Override
     public UserDataSet load(long id) {
         return runInSession(session -> {
-            UserDAOImpl dao = new UserDAOImpl(session);
-            UserDataSet user = dao.load(id);
-            cache.put(id,new MyElement(user));
-            return user;
+            if (cache.get(id) == null) {
+                System.out.println("Return from DB and write to Cache with id: " + id);
+                UserDAOImpl dao = new UserDAOImpl(session);
+                UserDataSet user = dao.load(id);
+                cache.put(id, new MyElement<>(user));
+                return user;
+            } else {
+                System.out.println("Return from cache");
+                return (UserDataSet) cache.get(id);
+            }
         });
     }
 
@@ -67,7 +75,7 @@ public class DBServiceHibernateImpl implements DBService {
 
     }
 
-    public void registerCache(CacheEngineImpl cache) {
+    public void registerCache(CacheEngineImpl<Long,DataSet> cache) {
         this.cache = cache;
     }
 

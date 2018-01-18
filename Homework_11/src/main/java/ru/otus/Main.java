@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CacheEngineImpl<Long, ? extends DataSet> cacheEngine = new CacheEngineImpl<>(2,1,1,true);
+        CacheEngineImpl<Long,DataSet> cacheEngine = new CacheEngineImpl<>(2,1,1,true);
         DBServiceHibernateImpl dbService = new DBServiceHibernateImpl();
 
         dbService.registerCache(cacheEngine);
@@ -44,13 +44,13 @@ public class Main {
         dbService.save(user1);
         dbService.save(user2);
         dbService.save(user3);
-        System.out.println("User with name Sven: " + dbService.getByName("Sven"));
-        list = dbService.getAllUsers();
         userFromDB = dbService.load(3);
-
-        for (UserDataSet userDataSet : list) {
-            System.out.println("User from LIST: " + userDataSet.toString());
-        }
+        System.out.println("User from DB: " + userFromDB.toString());
+        userFromDB = dbService.load(3);
+        System.out.println("User from DB: " + userFromDB.toString());
+        userFromDB = dbService.load(1);
+        System.out.println("User from DB: " + userFromDB.toString());
+        userFromDB = dbService.load(1);
         System.out.println("User from DB: " + userFromDB.toString());
     }
 }

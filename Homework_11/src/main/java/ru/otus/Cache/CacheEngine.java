@@ -2,7 +2,7 @@ package ru.otus.Cache;
 
 public interface CacheEngine<K, V> {
 
-    void put(K key, MyElement<V> element);
+    void put(K key,MyElement<V> element);
 
     V get(K key);
 
