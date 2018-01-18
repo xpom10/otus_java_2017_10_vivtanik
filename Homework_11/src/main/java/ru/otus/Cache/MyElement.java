@@ -26,4 +26,8 @@ public class MyElement<V> {
     public long getLastAccessTime() {
         return lastAccessTime;
     }
+
+    public void setAccessed() {
+        lastAccessTime = getCurrentTime();
+    }
 }

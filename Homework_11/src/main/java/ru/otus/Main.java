@@ -14,9 +14,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CacheEngineImpl<Long,DataSet> cacheEngine = new CacheEngineImpl<>(2,1,1,true);
         DBServiceHibernateImpl dbService = new DBServiceHibernateImpl();
 
+        CacheEngineImpl<Long,DataSet> cacheEngine = new CacheEngineImpl<>(2,1000,1000,false);
         dbService.registerCache(cacheEngine);
 
 
@@ -37,20 +37,24 @@ public class Main {
         numbers.forEach(n -> user3.addPhone(new PhoneDataSet(n)));
 
         UserDataSet userFromDB;
-        List<UserDataSet> list;
 
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
+
         dbService.save(user1);
         dbService.save(user2);
         dbService.save(user3);
+
+        userFromDB = dbService.load(2);
+        System.out.println("User: " + userFromDB.toString());
         userFromDB = dbService.load(3);
-        System.out.println("User from DB: " + userFromDB.toString());
-        userFromDB = dbService.load(3);
-        System.out.println("User from DB: " + userFromDB.toString());
+        System.out.println("User: " + userFromDB.toString());
         userFromDB = dbService.load(1);
-        System.out.println("User from DB: " + userFromDB.toString());
+        System.out.println("User: " + userFromDB.toString());
         userFromDB = dbService.load(1);
-        System.out.println("User from DB: " + userFromDB.toString());
+        System.out.println("User: " + userFromDB.toString());
     }
+
+
+
 }

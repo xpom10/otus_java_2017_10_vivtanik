@@ -1,13 +1,9 @@
 package ru.otus.Cache;
 
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.function.Function;
 
-@SuppressWarnings("UncheckedCast")
 
 public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
 
@@ -42,11 +38,11 @@ public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
         elements.put(key, new SoftReference<>(element));
         if (!isEternal) {
             if (lifeTimeMs != 0) {
-                TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> lifeElement.get().getCreationTime() + lifeTimeMs);
+                TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> Objects.requireNonNull(lifeElement.get()).getCreationTime() + lifeTimeMs);
                 timer.schedule(lifeTimerTask, lifeTimeMs);
             }
             if (idleTimeMs != 0) {
-                TimerTask idleTimerTask = getTimerTask(key, idleElement -> idleElement.get().getLastAccessTime() + idleTimeMs);
+                TimerTask idleTimerTask = getTimerTask(key, idleElement -> Objects.requireNonNull(idleElement.get()).getLastAccessTime() + idleTimeMs);
                 timer.schedule(idleTimerTask, idleTimeMs, idleTimeMs);
             }
         }
@@ -57,7 +53,8 @@ public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
         SoftReference<MyElement<V>> softReference = elements.get(key);
         if (softReference != null) {
             hitCount++;
-            return softReference.get().getValue();
+            Objects.requireNonNull(softReference.get()).setAccessed();
+            return Objects.requireNonNull(softReference.get()).getValue();
         }
         else {
             missCount++;
@@ -74,7 +71,7 @@ public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
     }
 
     public void dispose() {
-
+        timer.cancel();
     }
 
     private TimerTask getTimerTask(final K key, Function<SoftReference<MyElement<V>>, Long> timeFunction) {

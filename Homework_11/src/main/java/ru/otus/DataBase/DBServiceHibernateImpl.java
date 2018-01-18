@@ -39,15 +39,16 @@ public class DBServiceHibernateImpl implements DBService {
     @Override
     public UserDataSet load(long id) {
         return runInSession(session -> {
-            if (cache.get(id) == null) {
+            UserDataSet user = (UserDataSet) cache.get(id);
+            if ( user == null) {
                 System.out.println("Return from DB and write to Cache with id: " + id);
                 UserDAOImpl dao = new UserDAOImpl(session);
-                UserDataSet user = dao.load(id);
-                cache.put(id, new MyElement<>(user));
-                return user;
+                UserDataSet userDataSet = dao.load(id);
+                cache.put(id, new MyElement<>(userDataSet));
+                return userDataSet;
             } else {
-                System.out.println("Return from cache");
-                return (UserDataSet) cache.get(id);
+                System.out.println("Return from cache with id: " + id);
+                return user;
             }
         });
     }
