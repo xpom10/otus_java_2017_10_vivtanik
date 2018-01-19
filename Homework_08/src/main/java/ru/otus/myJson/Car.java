@@ -23,19 +23,19 @@ public class Car implements Serializable {
 
     }
 
-//    public String getBrand() {
-//        return brand;
-//    }
+    public String getBrand() {
+        return brand;
+    }
 
-//    public String getModel() {
-//        return model;
-//    }
-//
-//    public Integer getCount() {
-//        return count;
-//    }
-//
-//    public Specification getSpecification() {
-//        return specification;
-//    }
+    public String getModel() {
+        return model;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public Specification getSpecification() {
+        return specification;
+    }
 }

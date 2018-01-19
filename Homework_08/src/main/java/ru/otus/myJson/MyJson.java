@@ -46,19 +46,18 @@ public class MyJson {
         else return OBJECT;
     }
 
-    private String serializeString(Object jsonObject) throws IllegalAccessException {
+    private String serializeString(Object jsonObject) {
         return "\"" + jsonObject.toString() + "\",";
     }
 
-    private String serializeNumberOrBoolean(Object jsonObject) throws IllegalAccessException {
+    private String serializeNumberOrBoolean(Object jsonObject) {
         return jsonObject.toString() + ",";
     }
 
     private String serializeArray(Object jsonObject) throws IllegalAccessException {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        int a = Array.getLength(jsonObject);
-        for (int i = 0; i < a; i++) {
+        for (int i = 0; i < Array.getLength(jsonObject); i++) {
             builder.append(serializeFieldValue(Array.get(jsonObject, i)));
         }
         builder.deleteCharAt(builder.length() - 1).append("],");
