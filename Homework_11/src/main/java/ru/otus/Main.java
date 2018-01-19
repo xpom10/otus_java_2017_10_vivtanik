@@ -14,11 +14,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DBServiceHibernateImpl dbService = new DBServiceHibernateImpl();
-
         CacheEngineImpl<Long,DataSet> cacheEngine = new CacheEngineImpl<>(2,1000,1000,false);
-        dbService.registerCache(cacheEngine);
-
+        DBServiceHibernateImpl dbService = new DBServiceHibernateImpl(cacheEngine);
 
         List<String> numbers = new ArrayList<>();
         numbers.add("123");
@@ -33,7 +30,7 @@ public class Main {
         numbers.forEach(n -> user2.addPhone(new PhoneDataSet(n)));
         numbers.remove("456");
 
-        UserDataSet user3 = new UserDataSet("Harold", 26, new AddressDataSet("Milan"));
+        UserDataSet user3 = new UserDataSet("Olya", 26, new AddressDataSet("Milan"));
         numbers.forEach(n -> user3.addPhone(new PhoneDataSet(n)));
 
         UserDataSet userFromDB;

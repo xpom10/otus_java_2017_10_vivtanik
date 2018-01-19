@@ -21,6 +21,11 @@ public class DBServiceHibernateImpl implements DBService {
         sessionFactory = ConnectionHelper.getSessionFactory();
     }
 
+    public DBServiceHibernateImpl(CacheEngineImpl<Long,DataSet> cache) {
+        sessionFactory = ConnectionHelper.getSessionFactory();
+        registerCache(cache);
+    }
+
     @Override
     public String getLocalStatus() {
         return runInSession(session -> session.getTransaction().getStatus().name());
@@ -31,26 +36,36 @@ public class DBServiceHibernateImpl implements DBService {
         try(Session session = sessionFactory.openSession()) {
             UserDAOImpl dao = new UserDAOImpl(session);
             dao.save(user);
-            System.out.println("Write to cache with id: " + user.getId());
-            cache.put(user.getId(),new MyElement<>(user));
+
+            if (cache != null) {
+                System.out.println("Write to cache with id: " + user.getId());
+                cache.put(user.getId(),new MyElement<>(user));
+            }
         }
     }
 
     @Override
     public UserDataSet load(long id) {
-        return runInSession(session -> {
-            UserDataSet user = (UserDataSet) cache.get(id);
-            if ( user == null) {
-                System.out.println("Return from DB and write to Cache with id: " + id);
-                UserDAOImpl dao = new UserDAOImpl(session);
-                UserDataSet userDataSet = dao.load(id);
-                cache.put(id, new MyElement<>(userDataSet));
-                return userDataSet;
-            } else {
+        UserDataSet user;
+        if (cache != null) {
+            user = (UserDataSet) cache.get(id);
+            if (user != null) {
                 System.out.println("Return from cache with id: " + id);
                 return user;
+            } else {
+                user = runInSession(session -> {
+                    UserDAOImpl dao = new UserDAOImpl(session);
+                    return dao.load(id);
+                });
+                System.out.println("Return from DB and write to cache id: " + id);
+                cache.put(id,new MyElement<>(user));
+                return user;
             }
-        });
+        }
+        return runInSession(session -> {
+                UserDAOImpl dao = new UserDAOImpl(session);
+                return dao.load(id);
+            });
     }
 
     @Override
@@ -76,7 +91,7 @@ public class DBServiceHibernateImpl implements DBService {
 
     }
 
-    public void registerCache(CacheEngineImpl<Long,DataSet> cache) {
+    private void registerCache(CacheEngineImpl<Long, DataSet> cache) {
         this.cache = cache;
     }
 
