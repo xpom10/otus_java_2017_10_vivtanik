@@ -27,13 +27,20 @@ public class UserDataSet extends DataSet {
         return admin;
     }
 
-    public String getAge() {
+    public String getPassword() {
         return password;
     }
 
 
     @Override
     public String toString() {
-        return String.format("UserDataSet{name = '%s', age = %s}", admin, password);
+        return String.format("UserDataSet{name = '%s', password = %s}", admin, password);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+       UserDataSet a =  (UserDataSet) obj;
+        return (admin.equals(a.getUser()) && password.equals(a.getPassword()));
+    }
+
 }

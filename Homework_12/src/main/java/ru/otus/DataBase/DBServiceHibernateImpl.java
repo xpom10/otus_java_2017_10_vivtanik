@@ -17,10 +17,6 @@ public class DBServiceHibernateImpl implements DBService {
     private final SessionFactory sessionFactory;
     private CacheEngineImpl<Long,DataSet> cache;
 
-    public DBServiceHibernateImpl() {
-        sessionFactory = ConnectionHelper.getSessionFactory();
-    }
-
     public DBServiceHibernateImpl(CacheEngineImpl<Long,DataSet> cache) {
         sessionFactory = ConnectionHelper.getSessionFactory();
         registerCache(cache);
@@ -93,7 +89,9 @@ public class DBServiceHibernateImpl implements DBService {
         this.cache = cache;
     }
 
-
+    public CacheEngineImpl getCache() {
+        return cache;
+    }
 
     private <R> R runInSession(Function<Session, R> function) {
         try (Session session = sessionFactory.openSession()) {

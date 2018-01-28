@@ -90,4 +90,13 @@ public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
     private boolean isT1BeforeT2(long t1, long t2) {
         return t1 < t2 + TIME_THRESHOLD_MS;
     }
+
+    public Map<String,Object> getStat() {
+        Map<String,Object> stat = new HashMap<>();
+        stat.put("maxElements",maxElements);
+        stat.put("lifeTimeMs",lifeTimeMs);
+        stat.put("idleTimeMs",idleTimeMs);
+        stat.put("isEternal",String.valueOf(isEternal));
+        return stat;
+    }
 }
