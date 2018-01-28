@@ -20,7 +20,6 @@ public class AdminServlet extends HttpServlet {
     private DBServiceHibernateImpl dbService;
     private Map<String, Object> pageVariables;
 
-    private String login = null;
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {

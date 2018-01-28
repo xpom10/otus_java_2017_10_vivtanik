@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class SignInServlet extends HttpServlet {
     private static final String SIGNIN_PAGE_SERVLET = "signIn.html";
+    private static final String MESSAGE = "message";
     private DBServiceHibernateImpl dbService;
     private Map<String, Object> pageVariables = new HashMap<>();
 
@@ -20,7 +21,7 @@ public class SignInServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
-        pageVariables.put("message","Please, enter login and password");
+        pageVariables.put(MESSAGE,"Please, enter login and password");
         getPage(response);
     }
 
@@ -36,10 +37,10 @@ public class SignInServlet extends HttpServlet {
 
         if ((requestUser != null && requestUser.length() != 0 && requestPassword.length() != 0) && requestPassword.equals(repeatRequestPassword) ) {
             dbService.save(new UserDataSet(requestUser,requestPassword));
-            pageVariables.put("message", "Login and password created");
+            pageVariables.put(MESSAGE, "Login and password created");
             getPage(response);
         } else {
-            pageVariables.put("message", "Error!!! please, repeat");
+            pageVariables.put(MESSAGE, "Error!!! please, repeat");
             getPage(response);
         }
     }
