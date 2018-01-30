@@ -13,7 +13,11 @@ import java.util.Map;
 public class CacheServlet extends HttpServlet {
 
     private static final String CACHE_PAGE_SERVLET = "cache.html";
-    private DBServiceHibernateImpl dbService = Main.getDB();
+    private final DBServiceHibernateImpl dbService;
+
+    public CacheServlet(DBServiceHibernateImpl dbService) {
+        this.dbService = dbService;
+    }
 
 
     public void doGet(HttpServletRequest request,

@@ -17,7 +17,9 @@ public class SignInServlet extends HttpServlet {
     private DBServiceHibernateImpl dbService;
     private Map<String, Object> pageVariables = new HashMap<>();
 
-
+    public SignInServlet(DBServiceHibernateImpl dbService) {
+        this.dbService = dbService;
+    }
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
@@ -32,8 +34,6 @@ public class SignInServlet extends HttpServlet {
         String requestUser = request.getParameter("login");
         String requestPassword = request.getParameter("password");
         String repeatRequestPassword = request.getParameter("repeatPassword");
-
-        dbService = Main.getDB();
 
         if ((requestUser != null && requestUser.length() != 0 && requestPassword.length() != 0) && requestPassword.equals(repeatRequestPassword) ) {
             dbService.save(new UserDataSet(requestUser,requestPassword));

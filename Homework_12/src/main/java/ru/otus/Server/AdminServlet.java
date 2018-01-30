@@ -21,6 +21,11 @@ public class AdminServlet extends HttpServlet {
     private Map<String, Object> pageVariables;
 
 
+    public AdminServlet(DBServiceHibernateImpl dbService) {
+        this.dbService = dbService;
+    }
+
+
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
         pageVariables = new HashMap<>();
@@ -32,7 +37,6 @@ public class AdminServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws IOException {
-        dbService = Main.getDB();
         pageVariables = new HashMap<>();
 
         String requestUser = request.getParameter(LOGIN_PARAMETER_NAME);

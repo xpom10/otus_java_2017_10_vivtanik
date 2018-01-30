@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import ru.otus.Cache.CacheEngineImpl;
 import ru.otus.DataBase.DBServiceHibernateImpl;
 import ru.otus.Server.AdminServlet;
@@ -27,9 +28,9 @@ public class Main {
         resourceHandler.setResourceBase(PUBLIC_HTML);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(AdminServlet.class, "/admin");
-        context.addServlet(CacheServlet.class, "/cache");
-        context.addServlet(SignInServlet.class, "/signIn");
+        context.addServlet(new ServletHolder(new AdminServlet(dbService)),"/admin");
+        context.addServlet(new ServletHolder(new SignInServlet(dbService)),"/signIn");
+        context.addServlet(new ServletHolder(new CacheServlet(dbService)),"/cache");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));
