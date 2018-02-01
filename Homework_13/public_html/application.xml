@@ -6,15 +6,15 @@
 
     <context:component-scan base-package="ru.otus.Server"/>
 
-    <bean id="cache" class="ru.otus.Cache.CacheEngineImpl">
+    <bean id="cacheBean" class="ru.otus.Cache.CacheEngine">
         <constructor-arg name="maxElements" value="5"/>
         <constructor-arg name="lifeTimeMs" value="5"/>
         <constructor-arg name="idleTimeMs" value="5"/>
         <constructor-arg name="isEternal" value="true"/>
     </bean>
 
-    <bean id="dbService" class="ru.otus.DataBase.DBServiceHibernateImpl">
-        <constructor-arg name="cache" value="cache"/>
+    <bean id="dbService" class="ru.otus.DataBase.DBService">
+        <constructor-arg name="cache" value="cacheBean"/>
     </bean>
 
 </beans>
