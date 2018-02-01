@@ -20,7 +20,7 @@ public class CacheServlet extends HttpServlet {
     private static final String CACHE_PAGE_SERVLET = "cache.html";
 
     @Autowired
-    private DBService dbService;
+    private DBServiceHibernateImpl dbService;
 
     public CacheServlet() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);

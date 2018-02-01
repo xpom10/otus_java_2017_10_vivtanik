@@ -3,7 +3,6 @@ package ru.otus.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ru.otus.DataBase.DBService;
 import ru.otus.DataBase.DBServiceHibernateImpl;
 import ru.otus.UserData.UserDataSet;
 
@@ -16,13 +15,16 @@ import java.util.Map;
 
 @Component
 public class SignInServlet extends HttpServlet {
-    private static final String SIGNIN_PAGE_SERVLET = "signIn.html";
+    private static final String SIGNIN_PAGE_SERVLET = "signin.html";
     private static final String MESSAGE = "message";
     private Map<String, Object> pageVariables = new HashMap<>();
 
     @Autowired
-    private DBService dbService;
+    private DBServiceHibernateImpl dbService;
 
+    public SignInServlet() {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
 
     public void doGet(HttpServletRequest request,
@@ -45,7 +47,7 @@ public class SignInServlet extends HttpServlet {
             pageVariables.put(MESSAGE, "Login and password created");
             getPage(response);
         } else {
-            pageVariables.put(MESSAGE, "Error!!! please, repeat");
+            pageVariables.put(MESSAGE, dbService.getByName("login"));
             getPage(response);
         }
     }

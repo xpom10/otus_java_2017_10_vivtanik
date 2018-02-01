@@ -22,7 +22,7 @@ public class AdminServlet extends HttpServlet {
     public static final String PASS_PARAMETER_NAME = "password";
 
     @Autowired
-    private DBService dbService;
+    private DBServiceHibernateImpl dbService;
 
     private Map<String, Object> pageVariables;
 

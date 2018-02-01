@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.otus.Cache.CacheEngine;
 import ru.otus.Cache.CacheEngineImpl;
 import ru.otus.Cache.MyElement;
 import ru.otus.DAO.UserDAOImpl;
@@ -16,9 +17,9 @@ import java.util.function.Function;
 public class DBServiceHibernateImpl implements DBService {
 
     private final SessionFactory sessionFactory;
-    private CacheEngineImpl<Long,DataSet> cache;
+    private CacheEngine<Long,DataSet> cache;
 
-    public DBServiceHibernateImpl(CacheEngineImpl<Long,DataSet> cache) {
+    public DBServiceHibernateImpl(CacheEngine<Long,DataSet> cache) {
         sessionFactory = ConnectionHelper.getSessionFactory();
         this.cache = cache;
     }
@@ -86,7 +87,7 @@ public class DBServiceHibernateImpl implements DBService {
 
     }
 
-    public CacheEngineImpl getCache() {
+    public CacheEngine getCache() {
         return cache;
     }
 

@@ -1,5 +1,7 @@
 package ru.otus.Cache;
 
+import java.util.Map;
+
 public interface CacheEngine<K, V> {
 
     void put(K key, MyElement<V> element);
@@ -11,4 +13,6 @@ public interface CacheEngine<K, V> {
     int getMissCount();
 
     void dispose();
+
+    Map<String,Object> getStat();
 }

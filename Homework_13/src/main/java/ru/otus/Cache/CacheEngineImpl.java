@@ -4,7 +4,6 @@ import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.function.Function;
 
-
 public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
 
     private static final int TIME_THRESHOLD_MS = 5;
@@ -19,7 +18,6 @@ public class CacheEngineImpl<K,V> implements CacheEngine<K,V> {
 
     private final Map<K, SoftReference<MyElement<V>>> elements = new HashMap<>();
     private final Timer timer = new Timer();
-
 
     public CacheEngineImpl(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
         this.maxElements = maxElements;

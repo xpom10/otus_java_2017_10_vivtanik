@@ -1,5 +1,6 @@
 package ru.otus.DataBase;
 
+import ru.otus.Cache.CacheEngine;
 import ru.otus.Cache.CacheEngineImpl;
 import ru.otus.UserData.UserDataSet;
 
@@ -19,5 +20,5 @@ public interface DBService {
 
     void shutdown();
 
-    CacheEngineImpl getCache();
+    CacheEngine getCache();
 }
