@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cache</title>
+</head>
+<body>
+<div class="top">
+    <img src="logo.png"/>
+    <br/>
+</div>
+<p>Hello, ${login}</p>
+
+<p>maxElements: ${maxElements}</p>
+
+<p>lifeTimeMs: ${lifeTimeMs} Ms</p>
+
+<p>idleTimeMs: ${idleTimeMs} Ms</p>
+
+<p>isEternal: ${isEternal}</p>
+
+<form action="/cache" method="POST">
+    <input type="submit" value="Log out">
+</form>
+
+</body>
+</html>
