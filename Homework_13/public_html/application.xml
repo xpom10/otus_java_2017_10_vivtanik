@@ -6,8 +6,6 @@
 
     <context:component-scan base-package="ru.otus.Server"/>
 
-
-
     <bean id="cache" class="ru.otus.Cache.CacheEngineImpl">
         <constructor-arg index="0" name="maxElements" type="int"><value>10</value></constructor-arg>
         <constructor-arg index="1" name="lifeTimeMs" type="long"><value>6</value></constructor-arg>

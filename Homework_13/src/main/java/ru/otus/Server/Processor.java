@@ -3,12 +3,13 @@ package ru.otus.Server;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
-
+@Controller
 public class Processor {
     private static Processor instance = new Processor();
 
