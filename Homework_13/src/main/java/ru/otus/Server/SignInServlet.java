@@ -47,7 +47,7 @@ public class SignInServlet extends HttpServlet {
             pageVariables.put(MESSAGE, "Login and password created");
             getPage(response);
         } else {
-            pageVariables.put(MESSAGE, dbService.getByName("login"));
+            pageVariables.put(MESSAGE, "Error! Repeat, please");
             getPage(response);
         }
     }
