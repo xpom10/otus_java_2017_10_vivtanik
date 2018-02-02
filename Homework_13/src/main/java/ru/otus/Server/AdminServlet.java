@@ -3,7 +3,6 @@ package ru.otus.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ru.otus.DataBase.DBService;
 import ru.otus.DataBase.DBServiceHibernateImpl;
 import ru.otus.UserData.UserDataSet;
 
