@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Integer[] a = new Generator().generateArray(10,10);
+        Integer[] a = new Generator().generateArray(50,10);
         ThreadSorter sorter = new ThreadSorter();
         System.out.println(Arrays.toString(a));
 
