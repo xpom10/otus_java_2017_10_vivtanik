@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app>
+
+    <display-name>H13</display-name>
+    <description>Example of war file</description>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/application.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>cacheServlet</servlet-name>
+        <servlet-class>ru.otus.Server.CacheServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cacheServlet</servlet-name>
+        <url-pattern>/cache</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>signInServlet</servlet-name>
+        <servlet-class>ru.otus.Server.SignInServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>signInServlet</servlet-name>
+        <url-pattern>/signin</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>adminServlet</servlet-name>
+        <servlet-class>ru.otus.Server.AdminServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>adminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

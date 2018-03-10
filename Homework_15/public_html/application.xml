@@ -1,0 +1,20 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="ru.otus.Server"/>
+
+    <bean id="cache" class="ru.otus.Cache.CacheEngineImpl">
+        <constructor-arg index="0" name="maxElements" type="int"><value>10</value></constructor-arg>
+        <constructor-arg index="1" name="lifeTimeMs" type="long"><value>6</value></constructor-arg>
+        <constructor-arg index="2" name="idleTimeMs" type="long"><value>123</value></constructor-arg>
+        <constructor-arg index="3" name="isEternal" type="boolean"><value>false</value></constructor-arg>
+    </bean>
+
+    <bean id="dbService" class="ru.otus.DataBase.DBServiceHibernateImpl">
+        <constructor-arg ref="cache" type="ru.otus.Cache.CacheEngineImpl"/>
+    </bean>
+
+</beans>
