@@ -55,6 +55,13 @@ public class AdminServlet extends HttpServlet {
                 pageVariables.put("message", "Incorrect login and password, repeat please");
                 getPage(response);
             }
+        } else {
+            if (request.getSession().getAttribute(AdminServlet.LOGIN_PARAMETER_NAME) != null) {
+                response.sendRedirect("/cache");
+            } else {
+                pageVariables.put("message", "Incorrect login and password, repeat please");
+                getPage(response);
+            }
         }
     }
 
