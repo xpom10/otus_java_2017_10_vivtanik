@@ -3,6 +3,8 @@ package ru.otus.MessageSystem;
 public abstract class Message {
     private final Address from;
     private final Address to;
+    private long id;
+
 
     public Message(Address from, Address to) {
         this.from = from;
@@ -17,5 +19,12 @@ public abstract class Message {
         return to;
     }
 
-    public abstract void exec(Addressee addressee);
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
 }

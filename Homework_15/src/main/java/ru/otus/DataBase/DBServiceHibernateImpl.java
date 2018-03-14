@@ -8,6 +8,9 @@ import ru.otus.Cache.CacheEngine;
 import ru.otus.Cache.CacheEngineImpl;
 import ru.otus.Cache.MyElement;
 import ru.otus.DAO.UserDAOImpl;
+import ru.otus.MessageSystem.Address;
+import ru.otus.MessageSystem.Addressee;
+import ru.otus.MessageSystem.MessageSystem;
 import ru.otus.UserData.DataSet;
 import ru.otus.UserData.UserDataSet;
 
@@ -30,15 +33,17 @@ public class DBServiceHibernateImpl implements DBService {
     }
 
     @Override
-    public void save(UserDataSet user) {
+    public long save(UserDataSet user) {
         try(Session session = sessionFactory.openSession()) {
             UserDAOImpl dao = new UserDAOImpl(session);
             dao.save(user);
-        }
+
             if (cache != null) {
                 System.out.println("Write to cache with id: " + user.getId());
-                cache.put(user.getId(),new MyElement<>(user));
+                cache.put(user.getId(), new MyElement<>(user));
             }
+            return user.getId();
+        }
     }
 
     @Override
@@ -100,4 +105,13 @@ public class DBServiceHibernateImpl implements DBService {
         }
     }
 
+    @Override
+    public Address getAddress() {
+        return null;
+    }
+
+    @Override
+    public MessageSystem getMS() {
+        return null;
+    }
 }

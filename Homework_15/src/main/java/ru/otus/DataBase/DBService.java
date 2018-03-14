@@ -2,15 +2,16 @@ package ru.otus.DataBase;
 
 import ru.otus.Cache.CacheEngine;
 import ru.otus.Cache.CacheEngineImpl;
+import ru.otus.MessageSystem.Addressee;
 import ru.otus.UserData.UserDataSet;
 
 import java.util.List;
 
-public interface DBService {
+public interface DBService extends Addressee {
 
     String getLocalStatus();
 
-    void save(UserDataSet user);
+    long save(UserDataSet user);
 
     UserDataSet load(long id);
 
