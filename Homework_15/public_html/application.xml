@@ -17,4 +17,12 @@
         <constructor-arg ref="cache" type="ru.otus.Cache.CacheEngineImpl"/>
     </bean>
 
+    <bean id="messageSystem" class="ru.otus.MessageSystem.MessageSystem"/>
+
+    <bean id="messageSystemContext" class="ru.otus.MessageSystem.MessageSystemContext">
+        <constructor-arg ref="messageSystem"/>
+        <constructor-arg value="dataBaseAddress"/>
+    </bean>
+
+
 </beans>

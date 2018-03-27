@@ -3,6 +3,8 @@ package ru.otus.Server;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.otus.MessageSystem.MessageSystemContext;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -14,6 +16,8 @@ public class Processor {
     private static Processor instance = new Processor();
 
     private final Configuration configuration;
+
+    @Autowired
 
     private Processor() {
         configuration = new Configuration();

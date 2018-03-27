@@ -5,12 +5,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.otus.Cache.CacheEngine;
-import ru.otus.Cache.CacheEngineImpl;
 import ru.otus.Cache.MyElement;
 import ru.otus.DAO.UserDAOImpl;
 import ru.otus.MessageSystem.Address;
-import ru.otus.MessageSystem.Addressee;
 import ru.otus.MessageSystem.MessageSystem;
+import ru.otus.MessageSystem.MessageSystemContext;
 import ru.otus.UserData.DataSet;
 import ru.otus.UserData.UserDataSet;
 
@@ -20,10 +19,18 @@ import java.util.function.Function;
 public class DBServiceHibernateImpl implements DBService {
 
     private final SessionFactory sessionFactory;
+    private final Address address;
     private CacheEngine<Long,DataSet> cache;
+    private MessageSystem messageSystem;
 
-    public DBServiceHibernateImpl(CacheEngine<Long,DataSet> cache) {
+    @Autowired
+    public DBServiceHibernateImpl(CacheEngine<Long,DataSet> cache, MessageSystemContext systemContext) {
         sessionFactory = ConnectionHelper.getSessionFactory();
+
+        this.address = systemContext.getDbAddress();
+        this.messageSystem = systemContext.getMessageSystem();
+        systemContext.getMessageSystem().addAddressee(this);
+
         this.cache = cache;
     }
 
@@ -107,11 +114,11 @@ public class DBServiceHibernateImpl implements DBService {
 
     @Override
     public Address getAddress() {
-        return null;
+        return address;
     }
 
     @Override
-    public MessageSystem getMS() {
-        return null;
+    public MessageSystem getMessageSystem() {
+        return messageSystem;
     }
 }
